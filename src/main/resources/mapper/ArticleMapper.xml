@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yz.dao.ArticleMapper" >
+  <resultMap id="BaseResultMap" type="com.yz.model.Article" >
+    <id column="articleId" property="articleid" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="emitTime" property="emittime" jdbcType="TIMESTAMP" />
+    <result column="lastUpdateTime" property="lastupdatetime" jdbcType="TIMESTAMP" />
+    <result column="articleTypeName" property="articletypename" jdbcType="VARCHAR" />
+    <result column="userId" property="userid" jdbcType="INTEGER" />
+    <result column="articleTypeId" property="articletypeid" jdbcType="INTEGER" />
+  </resultMap>
+
+  <resultMap id="ResultMapWithBLOBs" type="com.yz.model.Article" extends="BaseResultMap" >
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    articleId, title, emitTime, lastUpdateTime, articleTypeName, userId, articleTypeId
+  </sql>
+  <sql id="Blob_Column_List" >
+    content
+  </sql>
+  <select id="getAllByUserId" parameterType="int" resultType="com.yz.model.Article">
+    select * from tb_article  where userId=#{userId}
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from tb_article
+    where articleId = #{articleid,jdbcType=INTEGER}
+  </select>
+  <select id="getArticleList" parameterType="string" resultType="com.yz.model.Article">
+    select * from tb_article where 1=1
+    <if test="articletypename != null and articletypename!=''">
+      and articleTypeName = #{articletypename,jdbcType=VARCHAR}
+    </if>
+    <if test="content != null">
+      and content like  concat(concat('%',#{content}),'%')
+
+    </if>
+  </select>
+  <select id="getSomeInfo" resultType="com.yz.model.ListAllInfo">
+    SELECT e.articleTypeName,t.articleTypeDesc,u.userName,u.registerTime ,COUNT('1') AS countall FROM tb_article e
+    LEFT JOIN tb_articletype t ON t.articleTypeId=e.articleTypeId LEFT JOIN tb_user u ON u.userId=e.userId GROUP BY e.articleTypeId
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from tb_article
+    where articleId = #{articleid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.yz.model.Article" >
+    insert into tb_article (articleId, title, emitTime, 
+      lastUpdateTime, articleTypeName, userId, 
+      articleTypeId, content)
+    values (#{articleid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{emittime,jdbcType=TIMESTAMP}, 
+      #{lastupdatetime,jdbcType=TIMESTAMP}, #{articletypename,jdbcType=VARCHAR}, #{userid,jdbcType=INTEGER}, 
+      #{articletypeid,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.yz.model.Article" >
+    insert into tb_article
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="articleid != null" >
+        articleId,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="emittime != null" >
+        emitTime,
+      </if>
+      <if test="lastupdatetime != null" >
+        lastUpdateTime,
+      </if>
+      <if test="articletypename != null" >
+        articleTypeName,
+      </if>
+      <if test="userid != null" >
+        userId,
+      </if>
+      <if test="articletypeid != null" >
+        articleTypeId,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="articleid != null" >
+        #{articleid,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="emittime != null" >
+        #{emittime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastupdatetime != null" >
+        #{lastupdatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="articletypename != null" >
+        #{articletypename,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="articletypeid != null" >
+        #{articletypeid,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yz.model.Article" >
+    update tb_article
+    <set >
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="emittime != null" >
+        emitTime = #{emittime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastupdatetime != null" >
+        lastUpdateTime = #{lastupdatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="articletypename != null" >
+        articleTypeName = #{articletypename,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null" >
+        userId = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="articletypeid != null" >
+        articleTypeId = #{articletypeid,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where articleId = #{articleid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.yz.model.Article" >
+    update tb_article
+    set title = #{title,jdbcType=VARCHAR},
+      emitTime = #{emittime,jdbcType=TIMESTAMP},
+      lastUpdateTime = #{lastupdatetime,jdbcType=TIMESTAMP},
+      articleTypeName = #{articletypename,jdbcType=VARCHAR},
+      userId = #{userid,jdbcType=INTEGER},
+      articleTypeId = #{articletypeid,jdbcType=INTEGER},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where articleId = #{articleid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yz.model.Article" >
+    update tb_article
+    set title = #{title,jdbcType=VARCHAR},
+      emitTime = #{emittime,jdbcType=TIMESTAMP},
+      lastUpdateTime = #{lastupdatetime,jdbcType=TIMESTAMP},
+      articleTypeName = #{articletypename,jdbcType=VARCHAR},
+      userId = #{userid,jdbcType=INTEGER},
+      articleTypeId = #{articletypeid,jdbcType=INTEGER}
+    where articleId = #{articleid,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yz.dao.ArticletypeMapper" >
+  <resultMap id="BaseResultMap" type="com.yz.model.Articletype" >
+    <id column="articleTypeId" property="articletypeid" jdbcType="INTEGER" />
+    <result column="articleTypeName" property="articletypename" jdbcType="VARCHAR" />
+    <result column="articleTypeDesc" property="articletypedesc" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    articleTypeId, articleTypeName, articleTypeDesc
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_articletype
+    where articleTypeId = #{articletypeid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from tb_articletype
+    where articleTypeId = #{articletypeid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.yz.model.Articletype" >
+    insert into tb_articletype (articleTypeId, articleTypeName, articleTypeDesc
+      )
+    values (#{articletypeid,jdbcType=INTEGER}, #{articletypename,jdbcType=VARCHAR}, #{articletypedesc,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.yz.model.Articletype" >
+    insert into tb_articletype
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="articletypeid != null" >
+        articleTypeId,
+      </if>
+      <if test="articletypename != null" >
+        articleTypeName,
+      </if>
+      <if test="articletypedesc != null" >
+        articleTypeDesc,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="articletypeid != null" >
+        #{articletypeid,jdbcType=INTEGER},
+      </if>
+      <if test="articletypename != null" >
+        #{articletypename,jdbcType=VARCHAR},
+      </if>
+      <if test="articletypedesc != null" >
+        #{articletypedesc,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yz.model.Articletype" >
+    update tb_articletype
+    <set >
+      <if test="articletypename != null" >
+        articleTypeName = #{articletypename,jdbcType=VARCHAR},
+      </if>
+      <if test="articletypedesc != null" >
+        articleTypeDesc = #{articletypedesc,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where articleTypeId = #{articletypeid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yz.model.Articletype" >
+    update tb_articletype
+    set articleTypeName = #{articletypename,jdbcType=VARCHAR},
+      articleTypeDesc = #{articletypedesc,jdbcType=VARCHAR}
+    where articleTypeId = #{articletypeid,jdbcType=INTEGER}
+  </update>
+</mapper>
